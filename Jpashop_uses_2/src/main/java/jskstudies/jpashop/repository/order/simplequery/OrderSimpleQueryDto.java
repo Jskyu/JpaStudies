@@ -1,4 +1,4 @@
-package jskstudies.jpashop.repository;
+package jskstudies.jpashop.repository.order.simplequery;
 
 import jskstudies.jpashop.model.Address;
 import jskstudies.jpashop.model.Order;

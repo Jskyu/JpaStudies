@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
 #        show_sql: true
@@ -17,4 +17,4 @@ logging:
     org:
       hibernate:
         SQL: debug
-        type: trace
+#        type: trace
