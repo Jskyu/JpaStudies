@@ -2,11 +2,9 @@ package jskstudies.jpashop.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jskstudies.jpashop.model.*;
 import jskstudies.jpashop.model.Order;
-import jskstudies.jpashop.model.OrderStatus;
-import jskstudies.jpashop.model.QMember;
-import jskstudies.jpashop.model.QOrder;
-import lombok.RequiredArgsConstructor;
+import jskstudies.jpashop.model.item.QItem;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -16,8 +14,11 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jskstudies.jpashop.model.QDelivery.delivery;
 import static jskstudies.jpashop.model.QMember.*;
 import static jskstudies.jpashop.model.QOrder.*;
+import static jskstudies.jpashop.model.QOrderItem.*;
+import static jskstudies.jpashop.model.item.QItem.item;
 
 @Repository
 public class OrderRepository {
@@ -127,6 +128,14 @@ public class OrderRepository {
     }
 
     public List<Order> findAllWithMemberDelivery() {
+        return query
+                .select(order)
+                .from(order)
+                .join(order.member).fetchJoin()
+                .join(order.delivery).fetchJoin()
+                .fetch();
+    }
+    public List<Order> findAllWithMemberDeliveryOld() {
         return em.createQuery(
                 "select o from Order o" +
                         " join fetch o.member m" +
@@ -135,6 +144,16 @@ public class OrderRepository {
     }
 
     public List<Order> findAllWithItem() {
+        return query
+                .selectDistinct(order)
+                .from(order)
+                .join(order.member, member).fetchJoin()
+                .join(order.delivery, delivery).fetchJoin()
+                .leftJoin(order.orderItems, orderItem).fetchJoin()
+                .leftJoin(orderItem.item, item).fetchJoin()
+                .fetch();
+    }
+    public List<Order> findAllWithItemOld() {
         return em.createQuery(
                 "select distinct o from Order o" +
                         " join fetch o.member m" +
@@ -145,6 +164,16 @@ public class OrderRepository {
     }
 
     public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return query
+                .select(order)
+                .from(order)
+                .join(order.member, member).fetchJoin()
+                .join(order.delivery, delivery).fetchJoin()
+                .offset(offset).limit(limit)
+                .fetch();
+    }
+
+    public List<Order> findAllWithMemberDeliveryOld(int offset, int limit) {
         return em.createQuery(
                 "select o from Order o" +
                         " join fetch o.member m" +
