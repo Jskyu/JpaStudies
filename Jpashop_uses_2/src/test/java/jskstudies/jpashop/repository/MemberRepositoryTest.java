@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 public class MemberRepositoryTest {
 
-    @Autowired MemberRepository memberRepository;
+    @Autowired
+    MemberRepositoryOld memberRepository;
 
     @Test
     @Transactional

@@ -1,6 +1,11 @@
 package jskstudies.jpashop.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jskstudies.jpashop.model.Order;
+import jskstudies.jpashop.model.OrderStatus;
+import jskstudies.jpashop.model.QMember;
+import jskstudies.jpashop.model.QOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -11,11 +16,19 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jskstudies.jpashop.model.QMember.*;
+import static jskstudies.jpashop.model.QOrder.*;
+
 @Repository
-@RequiredArgsConstructor
 public class OrderRepository {
 
     private final EntityManager em;
+    private final JPAQueryFactory query;
+
+    public OrderRepository(EntityManager em) {
+        this.em = em;
+        this.query = new JPAQueryFactory(em);
+    }
 
     public void save(Order order) {
         em.persist(order);
@@ -26,6 +39,29 @@ public class OrderRepository {
     }
 
     public List<Order> findAll(OrderSearch orderSearch) {
+        return query.select(order)
+                .from(order)
+                .join(order.member, member)
+                .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName()))
+                .limit(1000)
+                .fetch();
+    }
+
+    private BooleanExpression nameLike(String memberName) {
+        if(!StringUtils.hasText(memberName)){
+            return null;
+        }
+        return member.name.like(memberName);
+    }
+
+    private BooleanExpression statusEq(OrderStatus statusCond) {
+        if (statusCond == null) {
+            return null;
+        }
+        return order.status.eq(statusCond);
+    }
+
+    public List<Order> findAllByString(OrderSearch orderSearch) {
         String jpql = "select o from Order o join o.member m";
         boolean isFirstCondition = true;
 
@@ -117,5 +153,4 @@ public class OrderRepository {
                 .setMaxResults(limit)
                 .getResultList();
     }
-
 }
