@@ -1,5 +1,6 @@
 package jskstudies.jpashop.repository.order.simplequery;
 
+import com.querydsl.core.annotations.QueryProjection;
 import jskstudies.jpashop.model.Address;
 import jskstudies.jpashop.model.Order;
 import jskstudies.jpashop.model.OrderStatus;
@@ -16,6 +17,7 @@ public class OrderSimpleQueryDto {
     private OrderStatus orderStatus;
     private Address address;
 
+    @QueryProjection
     public OrderSimpleQueryDto(Order o){
         orderId = o.getId();
         name = o.getMember().getName(); //LAZY 초기화

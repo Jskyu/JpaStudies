@@ -38,8 +38,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         return query
                 .select(order)
                 .from(order)
-                .join(order.member).fetchJoin()
-                .join(order.delivery).fetchJoin()
+                .join(order.member, member).fetchJoin()
+                .join(order.delivery, delivery).fetchJoin()
                 .fetch();
     }
 
