@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,9 +42,10 @@ public class OrderServiceTest {
         int orderCount = 2;
         //when
         Long orderId = orderService.order(member.getId(), book.getId(), orderCount);
-        Order getOrder = orderRepository.findOne(orderId);
+        Order getOrder = orderRepository.findById(orderId).orElse(null);
 
         //then
+        assert getOrder != null;
         assertEquals("상품 주문시 상태는 ORDER", OrderStatus.ORDER, getOrder.getStatus());
         assertEquals("주문한 상품 종류 수가 정확해야 한다.", 1, getOrder.getOrderItems().size());
         assertEquals("주문 가격은 가격 * 수량이다.", 10000 * orderCount, getOrder.getTotalPrice());
@@ -77,7 +79,8 @@ public class OrderServiceTest {
         orderService.cancelOrder(orderId);;
 
         //then
-        Order getOrder = orderRepository.findOne(orderId);
+        Order getOrder = orderRepository.findById(orderId).orElse(null);
+        assert getOrder != null;
         assertEquals("주문 취소시 상태는 CANCEL", OrderStatus.CANCEL, getOrder.getStatus());
         assertEquals("주문 취소된 상품은 그만큼 재고가 증가해야 한다.", 10, book.getStockQuantity());
 

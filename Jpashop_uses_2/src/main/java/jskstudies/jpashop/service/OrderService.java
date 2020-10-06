@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -52,13 +53,13 @@ public class OrderService {
      */
     @Transactional
     public void cancelOrder(Long orderId){
-        Order order = orderRepository.findOne(orderId);
-        order.cancel();
+        Order order = orderRepository.findById(orderId).orElse(null);
+        Objects.requireNonNull(order).cancel();
     }
     @Transactional
     public void notCancel(Long orderId){
-        Order order = orderRepository.findOne(orderId);
-        order.notCancel();
+        Order order = orderRepository.findById(orderId).orElse(null);
+        Objects.requireNonNull(order).notCancel();
     }
 
     /**

@@ -5,10 +5,7 @@ import jskstudies.jpashop.model.Order;
 import jskstudies.jpashop.model.OrderItem;
 import jskstudies.jpashop.repository.OrderRepository;
 import jskstudies.jpashop.repository.OrderSearch;
-import jskstudies.jpashop.repository.order.query.OrderFlatDto;
-import jskstudies.jpashop.repository.order.query.OrderItemQueryDto;
-import jskstudies.jpashop.repository.order.query.OrderQueryDto;
-import jskstudies.jpashop.repository.order.query.OrderQueryRepository;
+import jskstudies.jpashop.repository.order.query.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +18,12 @@ import static java.util.stream.Collectors.*;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderQueryService {
-    private final OrderRepository orderRepository;
 
+    private final OrderRepository orderRepository;
     private final OrderQueryRepository orderQueryRepository;
 
     public List<Order> ordersV1() {
-        List<Order> orders = orderRepository.findAllByString(new OrderSearch());
+        List<Order> orders = orderRepository.findAll(new OrderSearch());
         for (Order order : orders) {
             order.getMember().getName();
             order.getDelivery().getAddress();
@@ -38,7 +35,7 @@ public class OrderQueryService {
 
 
     public List<OrderDto> ordersV2() {
-        List<Order> orders = orderRepository.findAllByString(new OrderSearch());
+        List<Order> orders = orderRepository.findAll(new OrderSearch());
         return orders.stream()
                 .map(OrderDto::new)
                 .collect(toList());

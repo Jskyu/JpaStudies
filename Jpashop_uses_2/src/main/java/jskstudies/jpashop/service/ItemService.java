@@ -27,13 +27,14 @@ public class ItemService {
     }
 
     public Item findOne(Long itemId){
-        return itemRepository.findOne(itemId);
+        return itemRepository.findById(itemId).orElse(null);
     }
 
     @Transactional
     public void updateItem(BookForm form) {
-        Book book = (Book) itemRepository.findOne(form.getId());
+        Book book = (Book) itemRepository.findById(form.getId()).orElse(null);
 
+        assert book != null;
         book.setId(form.getId());
         book.setName(form.getName());
         book.setPrice(form.getPrice());

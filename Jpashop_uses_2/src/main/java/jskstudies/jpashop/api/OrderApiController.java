@@ -1,9 +1,7 @@
 package jskstudies.jpashop.api;
 
 import jskstudies.jpashop.model.Order;
-import jskstudies.jpashop.repository.OrderRepository;
 import jskstudies.jpashop.repository.order.query.OrderQueryDto;
-import jskstudies.jpashop.repository.order.query.OrderQueryRepository;
 import jskstudies.jpashop.service.query.OrderQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderApiController {
 
-    private final OrderRepository orderRepository;
-    private final OrderQueryRepository orderQueryRepository;
     private final OrderQueryService orderQueryService;
 
     @GetMapping("api/v1/orders")

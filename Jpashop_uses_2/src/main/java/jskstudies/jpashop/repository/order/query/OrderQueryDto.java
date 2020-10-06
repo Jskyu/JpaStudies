@@ -1,5 +1,6 @@
 package jskstudies.jpashop.repository.order.query;
 
+import com.querydsl.core.annotations.QueryProjection;
 import jskstudies.jpashop.model.Address;
 import jskstudies.jpashop.model.OrderStatus;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class OrderQueryDto {
     private Address address;
     private List<OrderItemQueryDto> orderItems;
 
+    @QueryProjection
     public OrderQueryDto(Long orderId, String name, LocalDateTime orderDate,
                          OrderStatus orderStatus, Address address) {
         this.orderId = orderId;

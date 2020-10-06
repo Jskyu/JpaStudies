@@ -2,6 +2,7 @@ package jskstudies.jpashop.api;
 
 import jskstudies.jpashop.model.Order;
 import jskstudies.jpashop.repository.OrderRepository;
+import jskstudies.jpashop.repository.OrderRepositoryImpl;
 import jskstudies.jpashop.repository.OrderSearch;
 import jskstudies.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
 import jskstudies.jpashop.repository.order.simplequery.OrderSimpleQueryRepository;
@@ -27,11 +28,12 @@ import static java.util.stream.Collectors.*;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderRepositoryImpl orderRepositorySupport;
     private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     @GetMapping("/api/v1/simple-orders")
     public List<Order> orderV1(){
-        List<Order> orders = orderRepository.findAllByString(new OrderSearch());
+        List<Order> orders = orderRepositorySupport.findAll(new OrderSearch());
         for(Order order : orders){
             order.getMember().getName(); // Lazy 강제 초기화
             order.getDelivery().getId(); // Lazy 강제 초기화
@@ -43,10 +45,11 @@ public class OrderSimpleApiController {
     public List<OrderSimpleQueryDto> orderV2(){
         //ORDER 2개
         //N + 1 -> 1 + 회원 N + 배송 N
-        return orderRepository.findAllByString(new OrderSearch()).stream()
+        return orderRepositorySupport.findAll(new OrderSearch()).stream()
                 .map(OrderSimpleQueryDto::new)
                 .collect(toList());
     }
+
     /*@GetMapping("/api/v2/simple-orders")
     public Result orderV2(){
         return new Result<>(orderRepository.findAll(new OrderSearch()).stream()
@@ -56,7 +59,7 @@ public class OrderSimpleApiController {
 
     @GetMapping("/api/v3/simple-orders")
     public List<OrderSimpleQueryDto> orderV3(){
-        List<Order> orders = orderRepository.findAllWithMemberDelivery();
+        List<Order> orders = orderRepositorySupport.findAllWithMemberDelivery();
         return orders.stream()
                 .map(OrderSimpleQueryDto::new)
                 .collect(Collectors.toList());
